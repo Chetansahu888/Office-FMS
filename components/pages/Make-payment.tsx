@@ -161,14 +161,7 @@ export default function MakePayment() {
             Process payments for completed indents
           </p>
         </div>
-        <Button 
-          onClick={fetchPaymentData} 
-          variant="outline" 
-          className="gap-2"
-        >
-          <RefreshCw className="w-4 h-4" />
-          Refresh
-        </Button>
+        
       </div>
 
       {/* Stats Cards */}
