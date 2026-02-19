@@ -180,18 +180,24 @@ export default function StoreIn() {
 
       document.body.appendChild(form);
       
-      iframe.onload = () => {
-        setSubmitted(true);
-        setTimeout(() => {
-          setSubmitted(false);
-          setShowStoreInModal(false);
-          setSelectedItem(null);
-          setIndents(indents.filter(i => i.rowNumber !== selectedItem.rowNumber));
-          
-          document.body.removeChild(form);
-          document.body.removeChild(iframe);
-        }, 2000);
-      };
+     iframe.onload = () => {
+  setSubmitted(true);
+
+  setTimeout(() => {
+    setSubmitted(false);
+    setShowStoreInModal(false);
+    setSelectedItem(null);
+
+    // ✅ STOP LOADING STATE
+    setSubmitting(false);
+
+    // ✅ REFRESH DATA FROM SERVER
+    fetchPendingStoreIn();
+
+    document.body.removeChild(form);
+    document.body.removeChild(iframe);
+  }, 1500);
+};
 
       form.submit();
 
