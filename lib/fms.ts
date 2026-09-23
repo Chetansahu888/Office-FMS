@@ -1,4 +1,7 @@
 const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyrXryQ1beeG3ABF5jq8--wiPXnjY5JIVoEdtpBMbS3Lr4Lyc7tJKJ1JLuCqRYMV-UAwQ/exec";
+// Main FMS deployment (appsscript.gs). Indents are submitted and read through it so
+// the Timestamp is stored as a real Date; the old deployment above is only used for master data.
+const FMS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzLkH_vSbpObvC85M-t5TBukKIRqQxi0gH_ZjIc_O7xrjjBvz8QDuz4dEjkovODvoI93w/exec";
 
 // JSONP helper
 function jsonp(url: string): Promise<any> {
@@ -57,7 +60,7 @@ export async function getMasterData() {
 
 export async function getFMSHistory() {
   try {
-    const url = `${APP_SCRIPT_URL}?action=getFMSHistory&_=${Date.now()}`;
+    const url = `${FMS_SCRIPT_URL}?action=getFMSHistory&_=${Date.now()}`;
     console.log('🔍 Fetching history from:', url);
     
     const data = await jsonp(url);
@@ -90,7 +93,7 @@ export async function submitFMSIndent(formData: any) {
       _: Date.now().toString()
     });
     
-    const url = `${APP_SCRIPT_URL}?${params.toString()}`;
+    const url = `${FMS_SCRIPT_URL}?${params.toString()}`;
     console.log('🔗 Submission URL:', url);
     
     const data = await jsonp(url);

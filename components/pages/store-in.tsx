@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, RefreshCw, Upload, CheckCircle } from 'lucide-react';
+import { Loader2, RefreshCw, Upload, CheckCircle, FileText, Image, X } from 'lucide-react';
+import { FileViewerLink } from '@/components/file-viewer';
+import { formatDate } from '@/lib/format';
 
 interface StoreInData {
   rowNumber: number;
@@ -130,15 +132,36 @@ export default function StoreIn() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const isImage = file.type.startsWith('image/');
+      const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+
+      if (!isImage && !isPdf) {
+        alert('Please upload an image (JPG, PNG, GIF, WebP) or a PDF file.');
+        e.target.value = '';
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        alert('File size should be less than 10MB.');
+        e.target.value = '';
+        return;
+      }
+
       setFormData({ ...formData, photoOfProduct: file });
     }
+  };
+
+  const removeFile = () => {
+    setFormData({ ...formData, photoOfProduct: null });
+    const fileInput = document.getElementById('product-photo') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!formData.inQty || !formData.photoOfProduct || !formData.unitOfMeasurement) {
-      alert('Please fill in all fields and upload photo');
+      alert('Please fill in all fields and upload a photo or PDF');
       return;
     }
 
@@ -167,7 +190,8 @@ export default function StoreIn() {
         inQty: formData.inQty.toString(),
         unitOfMeasurement: formData.unitOfMeasurement,
         photoOfProductBase64: photoBase64,
-        photoFileName: formData.photoOfProduct.name
+        photoFileName: formData.photoOfProduct.name,
+        photoMimeType: formData.photoOfProduct.type || 'application/pdf'
       };
 
       Object.entries(fields).forEach(([key, value]) => {
@@ -268,6 +292,7 @@ export default function StoreIn() {
                     <th className="text-left py-3 px-4 font-semibold">Type Of Bill</th>
                     <th className="text-left py-3 px-4 font-semibold">Bill Amount</th>
                     <th className="text-left py-3 px-4 font-semibold">Date</th>
+                    <th className="text-left py-3 px-4 font-semibold">Planned</th>
                     <th className="text-left py-3 px-4 font-semibold">Action</th>
                   </tr>
                 </thead>
@@ -281,7 +306,8 @@ export default function StoreIn() {
                       <td className="py-3 px-4">{indent['Lift Qty'] || 0}</td>
                       <td className="py-3 px-4">{indent['Type Of Bill'] || '-'}</td>
                       <td className="py-3 px-4">{indent['Bill Amount'] || 0}</td>
-                      <td className="py-3 px-4">{indent.Actual1 || '-'}</td>
+                      <td className="py-3 px-4">{formatDate(indent.Actual1)}</td>
+                      <td className="py-3 px-4">{formatDate(indent.Planned2)}</td>
                       <td className="py-3 px-4">
                         <Button
                           size="sm"
@@ -336,19 +362,17 @@ export default function StoreIn() {
                       </div>
                       <div>
                         <span className="text-muted-foreground">Date:</span>
-                        <span className="ml-2 font-medium">{selectedItem.Actual1 || '-'}</span>
+                        <span className="ml-2 font-medium">{formatDate(selectedItem.Actual1)}</span>
                       </div>
                       {selectedItem['Photo Of Bill'] && (
                         <div className="col-span-2">
                           <span className="text-muted-foreground">Photo Of Bill:</span>
-                          <a 
-                            href={selectedItem['Photo Of Bill']} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
+                          <FileViewerLink
+                            url={selectedItem['Photo Of Bill']}
+                            label="View Bill"
+                            title={`Bill - ${selectedItem['Bill No.'] || selectedItem['Indent No.'] || ''}`}
                             className="ml-2 text-blue-600 hover:underline"
-                          >
-                            View Bill Photo
-                          </a>
+                          />
                         </div>
                       )}
                     </div>
@@ -383,26 +407,54 @@ export default function StoreIn() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-2">Photo Of Product (Upload) *</label>
-                      <div className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:bg-muted/50">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleFileChange}
-                          className="hidden"
-                          id="product-photo"
-                          disabled={submitting}
-                        />
-                        <label htmlFor="product-photo" className="cursor-pointer block">
-                          <Upload className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
-                          <p className="text-sm font-medium mb-1">
-                            {formData.photoOfProduct?.name || 'Click to upload product photo'}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            Supported formats: JPG, PNG, GIF
-                          </p>
-                        </label>
-                      </div>
+                      <label className="block text-sm font-medium mb-2">Photo Of Product / Document (Upload) *</label>
+                      {formData.photoOfProduct ? (
+                        <div className="border border-border rounded-lg p-4 bg-muted/30">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              {formData.photoOfProduct.type.startsWith('image/') ? (
+                                <Image className="w-4 h-4" />
+                              ) : (
+                                <FileText className="w-4 h-4" />
+                              )}
+                              <div>
+                                <p className="font-medium">{formData.photoOfProduct.name}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {formData.photoOfProduct.type.startsWith('image/') ? 'Image' : 'PDF'} • {(formData.photoOfProduct.size / 1024).toFixed(1)} KB
+                                </p>
+                              </div>
+                            </div>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={removeFile}
+                              disabled={submitting}
+                              className="h-8 w-8 p-0"
+                            >
+                              <X className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:bg-muted/50">
+                          <input
+                            type="file"
+                            accept="image/*,.pdf,application/pdf"
+                            onChange={handleFileChange}
+                            className="hidden"
+                            id="product-photo"
+                            disabled={submitting}
+                          />
+                          <label htmlFor="product-photo" className="cursor-pointer block">
+                            <Upload className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
+                            <p className="text-sm font-medium mb-1">Click to upload product photo or PDF</p>
+                            <p className="text-xs text-muted-foreground">
+                              Supported formats: JPG, PNG, GIF, WebP, PDF (Max 10MB)
+                            </p>
+                          </label>
+                        </div>
+                      )}
                     </div>
 
                     {submitted && (

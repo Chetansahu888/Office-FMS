@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { FileViewerLink } from '@/components/file-viewer';
 import { Eye, Loader2, RefreshCw, ExternalLink, FileText, DollarSign, CheckCircle, Clock, AlertCircle, Receipt, CreditCard, TrendingUp } from 'lucide-react';
 
 interface PaymentData {
@@ -619,15 +620,12 @@ export default function MakePayment() {
                   <div>
                     <h3 className="text-sm font-medium text-muted-foreground mb-2">Bill Photo</h3>
                     <div className="p-4 border rounded-lg">
-                      <a
-                        href={selectedPayment['Photo Of Bill']}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-blue-600 hover:underline"
-                      >
-                        <Eye className="w-4 h-4" />
-                        View Bill Photo
-                      </a>
+                      <FileViewerLink
+                        url={selectedPayment['Photo Of Bill']}
+                        label="View Bill"
+                        title={`Bill - ${selectedPayment['Bill No.'] || selectedPayment['Indent No.'] || ''}`}
+                        showIcon
+                      />
                     </div>
                   </div>
                 )}
@@ -636,15 +634,11 @@ export default function MakePayment() {
                   <div>
                     <h3 className="text-sm font-medium text-muted-foreground mb-2">Product Photo</h3>
                     <div className="p-4 border rounded-lg">
-                      <a
-                        href={selectedPayment['Photo Of Product']}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-blue-600 hover:underline"
-                      >
-                        <Eye className="w-4 h-4" />
-                        View Product Photo
-                      </a>
+                      <FileViewerLink
+                        url={selectedPayment['Photo Of Product']}
+                        label="View Product Photo"
+                        showIcon
+                      />
                     </div>
                   </div>
                 )}

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, XCircle, Loader2, RefreshCw } from 'lucide-react';
+import { formatDate } from '@/lib/format';
 
 interface IndentData {
   rowNumber: number;
@@ -202,7 +203,7 @@ export default function ApproveIndent() {
                       <td className="py-3 px-4">{indent.Qty || 0}</td>
                       <td className="py-3 px-4">{indent.Specifications || '-'}</td>
                       <td className="py-3 px-4 text-sm text-muted-foreground">
-                        {indent.Timestamp || '-'}
+                        {formatDate(indent.Timestamp)}
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex gap-2">

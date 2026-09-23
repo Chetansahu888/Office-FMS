@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Loader2, CheckCircle, History, PlusCircle, Search, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { getMasterData, submitFMSIndent, getFMSHistory } from '@/lib/fms';
+import { formatDate } from '@/lib/format';
 
 interface FMSIndent {
   Timestamp: string;
@@ -474,7 +475,7 @@ export default function CreateIndent() {
                                 className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                               >
                                 <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
-                                  {indent.Timestamp || '-'}
+                                  {formatDate(indent.Timestamp)}
                                 </td>
                                 <td className="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100">
                               {indent['Indent No.'] || indent['Indent No'] || '-'}

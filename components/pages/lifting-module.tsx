@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Loader2, RefreshCw, Upload, FileText, Image, CheckCircle, X } from 'lucide-react';
+import { formatDate, isApproved } from '@/lib/format';
 
 interface LiftingData {
   rowNumber: number;
@@ -109,7 +110,8 @@ export default function LiftingModule() {
       const data = await fetchJsonp(`${SCRIPT_URL}?action=getPendingLifting`);
 
       if (data.success) {
-        setIndents(data.indents || []);
+        // Only approved indents can be lifted; rejected / not-yet-approved rows are hidden
+        setIndents((data.indents || []).filter(isApproved));
       } else {
         setError(data.error || 'Failed to fetch pending lifting items');
       }
@@ -389,6 +391,7 @@ export default function LiftingModule() {
                     <th className="text-left py-3 px-4 font-semibold">Qty</th>
                     <th className="text-left py-3 px-4 font-semibold">Specifications</th>
                     <th className="text-left py-3 px-4 font-semibold">Date</th>
+                    <th className="text-left py-3 px-4 font-semibold">Planned</th>
                     <th className="text-left py-3 px-4 font-semibold">Action</th>
                   </tr>
                 </thead>
@@ -402,7 +405,10 @@ export default function LiftingModule() {
                       <td className="py-3 px-4">{indent.Qty || 0}</td>
                       <td className="py-3 px-4">{indent.Specifications || '-'}</td>
                       <td className="py-3 px-4 text-sm text-muted-foreground">
-                        {indent.Timestamp || '-'}
+                        {formatDate(indent.Timestamp)}
+                      </td>
+                      <td className="py-3 px-4 text-sm text-muted-foreground">
+                        {formatDate(indent.Planned1)}
                       </td>
                       <td className="py-3 px-4">
                         <Button
@@ -480,6 +486,22 @@ export default function LiftingModule() {
                         </SelectContent>
                       </Select>
                     </div>
+
+                    {/* Common bills: only the Bill No. is captured per entry */}
+                    {formData.typeOfBill === 'Common' && (
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Bill No.</label>
+                        <Input
+                          type="text"
+                          placeholder="Enter common bill number"
+                          value={formData.billNo}
+                          onChange={(e) =>
+                            setFormData({ ...formData, billNo: e.target.value })
+                          }
+                          disabled={submitting}
+                        />
+                      </div>
+                    )}
 
                     {/* Only show these fields for Independent bills */}
                     {isIndependentBill && (

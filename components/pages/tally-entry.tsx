@@ -11,6 +11,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Eye, Loader2, RefreshCw, CheckCircle } from 'lucide-react';
+import { FileViewerLink } from '@/components/file-viewer';
+import { formatDate, isDateField } from '@/lib/format';
 
 interface TallyEntryData {
   rowNumber: number;
@@ -238,7 +240,7 @@ export default function TallyEntry() {
                       <td className="py-3 px-4">{indent['In Qty'] || 0}</td>
                       <td className="py-3 px-4">{indent['Unit Of Measurement'] || '-'}</td>
                       <td className="py-3 px-4">₹{indent['Bill Amount'] || 0}</td>
-                      <td className="py-3 px-4">{indent.Planned3 || '-'}</td>
+                      <td className="py-3 px-4">{formatDate(indent.Planned3)}</td>
                       <td className="py-3 px-4">
                         <div className="flex gap-2">
                           <Button
@@ -286,14 +288,11 @@ export default function TallyEntry() {
               return (
                 <div key={key} className="col-span-2">
                   <p className="text-sm text-muted-foreground">{key}</p>
-                  <a 
-                    href={value} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
+                  <FileViewerLink
+                    url={value}
+                    label={`View ${key}`}
                     className="text-blue-600 hover:underline text-sm"
-                  >
-                    View {key}
-                  </a>
+                  />
                 </div>
               );
             }
@@ -301,7 +300,7 @@ export default function TallyEntry() {
             return (
               <div key={key}>
                 <p className="text-sm text-muted-foreground">{key}</p>
-                <p className="font-medium">{value?.toString() || '-'}</p>
+                <p className="font-medium">{isDateField(key) ? formatDate(value) : value?.toString() || '-'}</p>
               </div>
             );
           })}
@@ -359,14 +358,11 @@ export default function TallyEntry() {
                         {selectedItem['Photo Of Bill'] && (
                           <div className="col-span-2">
                             <span className="text-muted-foreground">Photo Of Bill:</span>
-                            <a 
-                              href={selectedItem['Photo Of Bill']} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
+                            <FileViewerLink
+                              url={selectedItem['Photo Of Bill']}
+                              label="View Bill"
                               className="ml-2 text-blue-600 hover:underline"
-                            >
-                              View Bill Photo
-                            </a>
+                            />
                           </div>
                         )}
                       </div>
@@ -387,14 +383,11 @@ export default function TallyEntry() {
                         {selectedItem['Photo Of Product'] && (
                           <div className="col-span-2">
                             <span className="text-muted-foreground">Photo Of Product:</span>
-                            <a 
-                              href={selectedItem['Photo Of Product']} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
+                            <FileViewerLink
+                              url={selectedItem['Photo Of Product']}
+                              label="View Product Photo"
                               className="ml-2 text-blue-600 hover:underline"
-                            >
-                              View Product Photo
-                            </a>
+                            />
                           </div>
                         )}
                       </div>
