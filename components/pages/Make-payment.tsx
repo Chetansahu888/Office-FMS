@@ -387,7 +387,7 @@ export default function MakePayment() {
                     <th className="text-left p-4 font-semibold border-b">Indent No.</th>
                     <th className="text-left p-4 font-semibold border-b">Indentor Name</th>
                     <th className="text-left p-4 font-semibold border-b">Product Name</th>
-                    <th className="text-left p-4 font-semibold border-b">Vendor Name</th> {/* ✅ ADDED */}
+                    <th className="text-left p-4 font-semibold border-b">Vendor Name</th>
                     <th className="text-left p-4 font-semibold border-b">Qty</th>
                     <th className="text-left p-4 font-semibold border-b">Bill No.</th>
                     <th className="text-left p-4 font-semibold border-b">Bill Amount (₹)</th>
@@ -416,9 +416,9 @@ export default function MakePayment() {
                         <td className="p-4">
                           <div className="font-medium">{payment['Product Name'] || '-'}</div>
                         </td>
-                            <td className="p-4">
-                            <div className="font-medium">{payment['Vendor Name'] || '-'}</div> {/* ✅ ADDED */}
-                          </td>
+                        <td className="p-4">
+                          <div className="font-medium">{payment['Vendor Name'] || '-'}</div>
+                        </td>
                         <td className="p-4">
                           <div className="font-medium">{payment['Qty'] || 0}</div>
                         </td>

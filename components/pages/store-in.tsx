@@ -267,7 +267,8 @@ export default function StoreIn() {
                     <th className="text-left py-3 px-4 font-semibold">Lift Qty</th>
                     <th className="text-left py-3 px-4 font-semibold">Type Of Bill</th>
                     <th className="text-left py-3 px-4 font-semibold">Bill Amount</th>
-                    <th className="text-left py-3 px-4 font-semibold">Date</th>
+                    <th className="text-left py-3 px-4 font-semibold">Lifting Date</th>
+                    <th className="text-left py-3 px-4 font-semibold">Planned Date</th>
                     <th className="text-left py-3 px-4 font-semibold">Action</th>
                   </tr>
                 </thead>
@@ -281,7 +282,8 @@ export default function StoreIn() {
                       <td className="py-3 px-4">{indent['Lift Qty'] || 0}</td>
                       <td className="py-3 px-4">{indent['Type Of Bill'] || '-'}</td>
                       <td className="py-3 px-4">{indent['Bill Amount'] || 0}</td>
-                      <td className="py-3 px-4">{indent.Actual1 || '-'}</td>
+                      <td className="py-3 px-4 text-sm text-muted-foreground whitespace-nowrap">{indent.Actual1 || '-'}</td>
+                      <td className="py-3 px-4 text-sm text-muted-foreground whitespace-nowrap">{indent.Planned2 || indent['Planned 2'] || '-'}</td>
                       <td className="py-3 px-4">
                         <Button
                           size="sm"
@@ -335,8 +337,12 @@ export default function StoreIn() {
                         <span className="ml-2 font-medium">₹{selectedItem['Bill Amount'] || 0}</span>
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Date:</span>
+                        <span className="text-muted-foreground">Lifting Date:</span>
                         <span className="ml-2 font-medium">{selectedItem.Actual1 || '-'}</span>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Planned Store In:</span>
+                        <span className="ml-2 font-medium">{selectedItem.Planned2 || selectedItem['Planned 2'] || '-'}</span>
                       </div>
                       {selectedItem['Photo Of Bill'] && (
                         <div className="col-span-2">

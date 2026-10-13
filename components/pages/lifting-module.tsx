@@ -388,7 +388,8 @@ export default function LiftingModule() {
                     <th className="text-left py-3 px-4 font-semibold">Product</th>
                     <th className="text-left py-3 px-4 font-semibold">Qty</th>
                     <th className="text-left py-3 px-4 font-semibold">Specifications</th>
-                    <th className="text-left py-3 px-4 font-semibold">Date</th>
+                    <th className="text-left py-3 px-4 font-semibold">Indent Date</th>
+                    <th className="text-left py-3 px-4 font-semibold">Planned Date</th>
                     <th className="text-left py-3 px-4 font-semibold">Action</th>
                   </tr>
                 </thead>
@@ -401,8 +402,11 @@ export default function LiftingModule() {
                       <td className="py-3 px-4">{indent['Product Name'] || '-'}</td>
                       <td className="py-3 px-4">{indent.Qty || 0}</td>
                       <td className="py-3 px-4">{indent.Specifications || '-'}</td>
-                      <td className="py-3 px-4 text-sm text-muted-foreground">
+                      <td className="py-3 px-4 text-sm text-muted-foreground whitespace-nowrap">
                         {indent.Timestamp || '-'}
+                      </td>
+                      <td className="py-3 px-4 text-sm text-muted-foreground whitespace-nowrap">
+                        {indent.Planned1 || indent['Planned 1'] || '-'}
                       </td>
                       <td className="py-3 px-4">
                         <Button
@@ -426,6 +430,11 @@ export default function LiftingModule() {
               <Card className="w-full max-w-2xl my-8">
                 <CardHeader>
                   <CardTitle>Submit Lifting Entry - {selectedItem['Indent No.']}</CardTitle>
+                  {selectedItem.Planned1 && (
+                    <p className="text-sm text-muted-foreground">
+                      Planned Date: {selectedItem.Planned1}
+                    </p>
+                  )}
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSubmit} className="space-y-6">

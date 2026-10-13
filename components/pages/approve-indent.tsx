@@ -188,7 +188,8 @@ export default function ApproveIndent() {
                     <th className="text-left py-3 px-4 font-semibold">Product</th>
                     <th className="text-left py-3 px-4 font-semibold">Qty</th>
                     <th className="text-left py-3 px-4 font-semibold">Specifications</th>
-                    <th className="text-left py-3 px-4 font-semibold">Date</th>
+                    <th className="text-left py-3 px-4 font-semibold">Indent Date</th>
+                    <th className="text-left py-3 px-4 font-semibold">Planned Date</th>
                     <th className="text-left py-3 px-4 font-semibold">Actions</th>
                   </tr>
                 </thead>
@@ -201,8 +202,11 @@ export default function ApproveIndent() {
                       <td className="py-3 px-4">{indent['Product Name'] || '-'}</td>
                       <td className="py-3 px-4">{indent.Qty || 0}</td>
                       <td className="py-3 px-4">{indent.Specifications || '-'}</td>
-                      <td className="py-3 px-4 text-sm text-muted-foreground">
+                      <td className="py-3 px-4 text-sm text-muted-foreground whitespace-nowrap">
                         {indent.Timestamp || '-'}
+                      </td>
+                      <td className="py-3 px-4 text-sm text-muted-foreground whitespace-nowrap">
+                        {indent.Planned || '-'}
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex gap-2">
@@ -256,6 +260,11 @@ export default function ApproveIndent() {
                     Are you sure you want to {pendingAction.action} indent{' '}
                     <strong>{pendingAction.indent['Indent No.']}</strong>?
                   </p>
+                  {pendingAction.indent.Planned && (
+                    <p className="text-xs text-muted-foreground">
+                      Planned Date: {pendingAction.indent.Planned}
+                    </p>
+                  )}
                   <div className="flex gap-2">
                     <Button
                       onClick={confirmApprovalAction}
